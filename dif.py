@@ -1,6 +1,6 @@
 "dif.py -- Navy DIF file handler"
 
-# Copyright (c) 2001, Chris Gonnerman
+# Copyright 2001, 2013 Chris Gonnerman
 # All Rights Reserved
 # 
 # Redistribution and use in source and binary forms, with or without 
@@ -35,8 +35,9 @@
 # 05/29/2007 v1.2 Revised by Sebastien Ramage
 #                 Changed number handling code to accept floating-point
 #                 values.
+# 11/12/2013 v1.3 Released via github
 
-__version__ = "1.2"
+__version__ = "1.3"
 
 class DIFError(StandardError):
     pass
