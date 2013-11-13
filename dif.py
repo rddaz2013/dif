@@ -30,7 +30,13 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-__version__ = "1.1"
+# Revision History
+#
+# 05/29/2007 v1.2 Revised by Sebastien Ramage
+#                 Changed number handling code to accept floating-point
+#                 values.
+
+__version__ = "1.2"
 
 class DIFError(StandardError):
     pass
@@ -70,7 +76,12 @@ class DIF:
                     elif line == "label" and n[1] == 0:
                         self.vectors[n[0]-1] = n[2]
             else:
-                nums = map(int, line.split(","))
+                nums = line.split(",",1)
+                nums[0] = int(nums[0])
+                if not nums[1].isdigit() and nums[0] == 0:
+                    nums[1] = float(nums[1].replace(',','.')) #convert to float
+                elif nums[0] == 0:
+                    nums[1] = int(nums[1]) #convert to int
                 strv = file.readline().rstrip()
                 if nums[0] == -1:
                     if strv == "BOT":
