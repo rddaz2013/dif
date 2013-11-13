@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: DIF
+Version: 1.1
+Summary: dif.py
+Home-page: http://newcenturycomputers.net/projects/dif.html
+Author: Chris Gonnerman
+Author-email: chris.gonnerman@newcenturycomputers.net
+License: UNKNOWN
+Description: Navy DIF file handler
+Platform: UNKNOWN
