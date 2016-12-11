@@ -36,10 +36,13 @@
 #                 Changed number handling code to accept floating-point
 #                 values.
 # 11/12/2013 v1.3 Released via github
+# 21/11/2016 v1.4 modi RD
+# 11/12/2016 v1.41 update to Python3.5
 
-__version__ = "1.3"
+__version__ = "1.41"
 
-class DIFError(StandardError):
+
+class DIFError(Exception):
     pass
 
 class DIF:
@@ -53,6 +56,7 @@ class DIF:
         self.data = []
         self.header = {}
         self.vectors = []
+        tup = []
         while line:
             if header:
                 if line == "DATA":
@@ -62,10 +66,10 @@ class DIF:
                     file.readline()
                 else:
                     line = line.lower()
-                    n = map(int, file.readline().rstrip().split(","))
+                    n = list(map(int, file.readline().rstrip().split(",")))
                     s = file.readline().strip()[1:-1]
                     n.append(s)
-                    if self.header.has_key(line):
+                    if line in self.header:
                         if type(self.header[line]) is type(()):
                             self.header[line] = [ self.header[line], tuple(n) ]
                         else:
@@ -73,7 +77,7 @@ class DIF:
                     else:
                         self.header[line] = tuple(n)
                     if line == "vectors":
-                        self.vectors = map(lambda x: "FIELD%d" % x, range(n[1]))
+                        self.vectors = ["FIELD%d" % x for x in range(n[1])]
                     elif line == "label" and n[1] == 0:
                         self.vectors[n[0]-1] = n[2]
             else:
@@ -94,21 +98,21 @@ class DIF:
                         tup = []
                         return
                     else:
-                        raise DIFError, "Invalid Special Data Value [%s]" % strv
+                        raise DIFError("Invalid Special Data Value [%s]" % strv)
                 elif nums[0] == 0:
                     if strv == "V" or strv == "TRUE" or strv == "FALSE":
                         tup.append(nums[1])
                     elif strv == "NA" or strv == "ERROR":
                         tup.append(None)
                     else:
-                        raise DIFError, "Invalid Numeric Data Type [%s]" % strv
+                        raise DIFError("Invalid Numeric Data Type [%s]" % strv)
                 elif nums[0] == 1:
                     strv = strv.strip()
                     if strv[0:1] == '"':
                         strv = strv[1:-1]
                     tup.append(strv)
                 else:
-                    raise DIFError, "Invalid Type Indicator [%d]" % nums[0]
+                    raise DIFError("Invalid Type Indicator [%d]" % nums[0])
             line = file.readline().rstrip().upper()
 
     def __len__(self):
@@ -120,19 +124,3 @@ class DIF:
         for i in range(len(row)):
             rc[self.vectors[i]] = row[i]
         return rc
-
-if __name__ == "__main__":
-
-    from distutils.core import setup, Extension
-
-    setup(name="DIF",
-        version=__version__,
-        description="dif.py",
-        long_description="Navy DIF file handler",
-        author="Chris Gonnerman",
-        author_email="chris.gonnerman@newcenturycomputers.net",
-        url="http://newcenturycomputers.net/projects/dif.html",
-        py_modules=["dif"]
-    )
-
-# end of file.
